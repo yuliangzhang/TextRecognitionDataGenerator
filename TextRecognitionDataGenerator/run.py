@@ -8,7 +8,8 @@ from string_generator import (
     create_strings_from_dict,
     create_strings_from_file,
     create_strings_from_wikipedia,
-    create_strings_randomly
+    create_strings_randomly,
+    create_strings_from_file_len
 )
 from data_generator import FakeTextDataGenerator
 from multiprocessing import Pool
@@ -247,6 +248,8 @@ def load_dict(lang):
     lang_dict = []
     with open(os.path.join('dicts', lang + '.txt'), 'r', encoding="utf8", errors='ignore') as d:
         lang_dict = d.readlines()
+
+        lang_dict = [ch.strip('\n') for ch in lang_dict]
     return lang_dict
 
 def load_fonts(lang):
@@ -254,7 +257,7 @@ def load_fonts(lang):
         Load all fonts in the fonts directories
     """
 
-    if lang == 'cn':
+    if lang in ['cn','char_std_5990']:
         return [os.path.join('fonts/cn', font) for font in os.listdir('fonts/cn')]
     else:
         return [os.path.join('fonts/latin', font) for font in os.listdir('fonts/latin')]
@@ -286,7 +289,8 @@ def main():
     if args.use_wikipedia:
         strings = create_strings_from_wikipedia(args.length, args.count, args.language)
     elif args.input_file != '':
-        strings = create_strings_from_file(args.input_file, args.count)
+        # strings = create_strings_from_file(args.input_file, args.count)
+        strings = create_strings_from_file_len(args.input_file, args.count, 10)
     elif args.random_sequences:
         strings = create_strings_randomly(args.length, args.random, args.count,
                                           args.include_letters, args.include_numbers, args.include_symbols, args.language)
@@ -322,7 +326,8 @@ def main():
             [args.alignment] * string_count,
             [args.text_color] * string_count,
             [args.orientation] * string_count,
-            [args.space_width] * string_count
+            [args.space_width] * string_count,
+            lang_dict
         )
     ), total=args.count):
         pass
@@ -337,3 +342,15 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+    # Creating word list
+    # lang_dict = load_dict("char_std_5990")
+    # text = '山东省'
+    # char_index = ''
+    # for character in text:
+    #     p = lang_dict.index(character)
+    #     char_index = char_index + str(p) + ' '
+    #
+    # char_index = char_index[:-1]
+    #
+    # print(char_index)

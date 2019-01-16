@@ -2,6 +2,7 @@ import random
 import re
 import string
 import requests
+import numpy as np
 
 from bs4 import BeautifulSoup
 
@@ -23,6 +24,47 @@ def create_strings_from_file(filename, count):
                 strings.extend(lines)
 
     return strings
+
+
+def create_strings_from_file_len(filename, count, length):
+    """
+        Create all strings by reading lines in specified files
+    """
+
+    strings = []
+
+    with open(filename, 'r', encoding="utf8") as f:
+        lines = [l.strip('\n')[0:200] for l in f.readlines()]
+        # lines = [ch.strip('\n') for ch in lines]
+        if len(lines) == 0:
+            raise Exception("No lines could be read in file")
+        while len(strings) < count:
+            if len(lines) >= count - len(strings):
+                # strings.extend(lines[0:count - len(strings)])
+                tmp_str = lines[0:count - len(strings)]
+                for str in tmp_str:
+                    strings.append(str_process_solid_len(str, length))
+
+            else:
+                for str in lines:
+                    strings.append(str_process_solid_len(str, length))
+
+    return strings
+
+
+def str_process_solid_len(str, length):
+    res = ''
+    if len(str) < length:
+        tmp_space = ''
+        for tmp_cnt in range(length - len(str)):
+            tmp_space = tmp_space + " "
+            res = str + tmp_space
+    else:
+        start = np.random.randint(0, len(str) - length)
+        res = str[start: start + length]
+
+    return res
+
 
 def create_strings_from_dict(length, allow_variable, count, lang_dict):
     """
@@ -106,3 +148,19 @@ def create_strings_randomly(length, allow_variable, count, let, num, sym, lang):
             current_string += ' '
         strings.append(current_string[:-1])
     return strings
+
+if __name__ == '__main__':
+    str = '山东省临沂市莒南县十字路镇大山前社区X单元xxx室'
+    str2 = '山东省'
+
+    file_name = 'texts/test.txt'
+    count = 10
+    length = 5
+    strings = create_strings_from_file_len(file_name, count, length)
+
+    print(len(strings))
+    for str in strings:
+        print(str)
+
+    # for i in range(10):
+    #     print(str_process_solid_len(str2, 10))

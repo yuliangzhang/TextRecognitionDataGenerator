@@ -1,5 +1,6 @@
 import os
 import random
+import time
 
 from PIL import Image, ImageFilter
 
@@ -12,6 +13,18 @@ from background_generator import BackgroundGenerator
 from distorsion_generator import DistorsionGenerator
 
 class FakeTextDataGenerator(object):
+    # @classmethod
+    # def load_dict(lang):
+    #     """
+    #         Read the dictionnary file and returns all words in it.
+    #     """
+    #
+    #     lang_dict = []
+    #     with open(os.path.join('dicts', lang + '.txt'), 'r', encoding="utf8", errors='ignore') as d:
+    #         lang_dict = d.readlines()
+    #     return lang_dict
+
+
     @classmethod
     def generate_from_tuple(cls, t):
         """
@@ -21,7 +34,7 @@ class FakeTextDataGenerator(object):
         cls.generate(*t)
 
     @classmethod
-    def generate(cls, index, text, font, out_dir, size, extension, skewing_angle, random_skew, blur, random_blur, background_type, distorsion_type, distorsion_orientation, is_handwritten, name_format, width, alignment, text_color, orientation, space_width):
+    def generate(cls, index, text, font, out_dir, size, extension, skewing_angle, random_skew, blur, random_blur, background_type, distorsion_type, distorsion_orientation, is_handwritten, name_format, width, alignment, text_color, orientation, space_width, lang_dict):
         image = None
 
         ##########################
@@ -116,6 +129,16 @@ class FakeTextDataGenerator(object):
             )
         )
 
+        lang = 'char_std_5990'
+        with open(os.path.join('dicts', lang + '.txt'), 'r', encoding="utf8", errors='ignore') as d:
+            lang_dict = d.readlines()
+            lang_dict = [ch.strip('\n') for ch in lang_dict]
+        char_index = ''
+        for character in text:
+            p = lang_dict.index(character)
+            char_index = char_index + str(p) + ' '
+
+        char_index = char_index[:-1]
         #####################################
         # Generate name for resulting image #
         #####################################
@@ -125,9 +148,14 @@ class FakeTextDataGenerator(object):
             image_name = '{}_{}.{}'.format(str(index), text, extension)
         elif name_format == 2:
             image_name = '{}.{}'.format(str(index),extension)
+        elif name_format == 3:
+            image_name = '{}_{}.{}'.format(str(index), str(int(round(time.time() * 1000))), extension)
         else:
             print('{} is not a valid name format. Using default.'.format(name_format))
             image_name = '{}_{}.{}'.format(text, str(index), extension)
 
         # Save the image
         final_image.convert('RGB').save(os.path.join(out_dir, image_name))
+        file = r'out\data.txt'
+        with open(file, 'a+') as f:
+            f.write(image_name + ' ' + char_index + '\n')  # 加\n换行显示
