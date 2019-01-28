@@ -64,7 +64,8 @@ class BackgroundGenerator(object):
         pictures = os.listdir('./pictures')
 
         if len(pictures) > 0:
-            picture = Image.open('./pictures/' + pictures[random.randint(0, len(pictures) - 1)])
+            # picture = Image.open('./pictures/' + pictures[random.randint(0, len(pictures) - 1)])
+            picture = Image.open('./pictures/idcard.JPG')
 
             if picture.size[0] < width:
                 picture = picture.resize([width, int(picture.size[1] * (width / picture.size[0]))], Image.ANTIALIAS)

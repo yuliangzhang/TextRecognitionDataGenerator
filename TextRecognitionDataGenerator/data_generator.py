@@ -129,7 +129,7 @@ class FakeTextDataGenerator(object):
             )
         )
 
-        lang = 'char_std_5990'
+        lang = 'char_std_5991'
         with open(os.path.join('dicts', lang + '.txt'), 'r', encoding="utf8", errors='ignore') as d:
             lang_dict = d.readlines()
             lang_dict = [ch.strip('\n') for ch in lang_dict]

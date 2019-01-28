@@ -2,6 +2,7 @@ import argparse
 import os, errno
 import random
 import string
+import time
 
 from tqdm import tqdm
 from string_generator import (
@@ -257,7 +258,7 @@ def load_fonts(lang):
         Load all fonts in the fonts directories
     """
 
-    if lang in ['cn','char_std_5990']:
+    if lang in ['cn','char_std_5991']:
         return [os.path.join('fonts/cn', font) for font in os.listdir('fonts/cn')]
     else:
         return [os.path.join('fonts/latin', font) for font in os.listdir('fonts/latin')]
@@ -341,7 +342,9 @@ def main():
                 f.write("{} {}\n".format(file_name, strings[i]))
 
 if __name__ == '__main__':
-    main()
+    for i in range(50):
+        main()
+        time.sleep(2)
 
     # Creating word list
     # lang_dict = load_dict("char_std_5990")
