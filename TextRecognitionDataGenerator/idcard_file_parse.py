@@ -28,11 +28,13 @@ with open(os.path.join('dicts', lang + '.txt'), 'r', encoding="utf8", errors='ig
     lang_dict = d.readlines()
     lang_dict = [ch.strip('\n') for ch in lang_dict]
 
+
 for text in idcard_data:
     for character in text:
         try:
             p = lang_dict.index(character)
         except ValueError:
+            lang_dict.append(character)
             print(character)
 
 
